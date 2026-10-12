@@ -1,0 +1,97 @@
+name: Imperial Restaurant OS CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: imperial_test
+          POSTGRES_USER: imperial
+          POSTGRES_PASSWORD: change_me
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-asyncio
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql+asyncpg://imperial:change_me@localhost:5432/imperial_test
+          REDIS_URL: redis://localhost:6379/0
+          JWT_SECRET: test-secret-at-least-256-bits-long-key
+          SEED_ADMIN_EMAIL: admin@imperial.local
+          SEED_ADMIN_PASSWORD: ChangeMe123!
+          CORS_ORIGINS: http://localhost:3000
+          QR_BASE_URL: http://localhost:3000/mesa
+        run: |
+          cd backend
+          pytest --cov=app --cov-report=xml --cov-report=term
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: backend/coverage.xml
+        continue-on-error: true
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t imperial-api:latest ./backend
+
+      - name: Scan image
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: imperial-api:latest
+          format: table
+          exit-code: 0
+          severity: CRITICAL,HIGH

@@ -1,0 +1,122 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: imperial-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-imperial}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-imperial}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5442:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-imperial} -d ${POSTGRES_DB:-imperial}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - imperial-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: imperial-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - imperial-net
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: imperial-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - imperial-net
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: imperial-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - api
+      - redis
+    command: python -m app.workers.main
+    networks:
+      - imperial-net
+
+  nginx:
+    image: nginx:alpine
+    container_name: imperial-nginx
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - imperial-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: imperial-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./infra/observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - imperial-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: imperial-grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-ChangeMe123!}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3001:3000"
+    networks:
+      - imperial-net
+
+volumes:
+  pgdata:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  imperial-net:
+    name: imperial-net
+    driver: bridge

@@ -1,0 +1,618 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Identidad cromática oficial Imperial Restaurant OS (Guía UI/UX) */
+  --bg: #070a0f;
+  --bg-soft: #0b1119;
+  --surface: rgba(15, 20, 30, 0.65);
+  --surface-strong: rgba(10, 14, 22, 0.82);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.16);
+
+  --text: #f3f5f7;
+  --text-muted: #9aa5b1;
+
+  --gold: #f2b23e;
+  --red: #e0472f;
+  --jade: #2fbf8f;
+  --blue: #4f8cff;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+
+  /* Compatibilidad tokens existentes */
+  --bg-primary: #070a0f;
+  --bg-secondary: #0b1119;
+  --bg-card: rgba(15, 20, 30, 0.65);
+  --bg-card-hover: rgba(22, 30, 46, 0.85);
+  --bg-glass: rgba(15, 20, 30, 0.55);
+  
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(242, 178, 62, 0.3);
+  
+  --text-primary: #f3f5f7;
+  --text-secondary: #9aa5b1;
+  --text-muted: #64748b;
+  
+  --gold-primary: #f2b23e;
+  --gold-secondary: #d97706;
+  --gold-glow: rgba(242, 178, 62, 0.25);
+  --gold-gradient: linear-gradient(135deg, #f2b23e 0%, #d97706 50%, #b45309 100%);
+  
+  --emerald-primary: #2fbf8f;
+  --emerald-glow: rgba(47, 191, 143, 0.2);
+  --rose-primary: #e0472f;
+  --blue-primary: #4f8cff;
+  --indigo-primary: #6366f1;
+  
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.35);
+  --shadow-gold: 0 8px 32px rgba(242, 178, 62, 0.15);
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  
+  --transition-fast: 0.18s ease;
+  --transition-smooth: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   CLASES EFECTOS MODERNOS OFICIALES (GUÍA UI/UX IMPERIAL RESTAURANT OS)
+   ========================================================================== */
+
+/* 7.1 Tarjeta base */
+.card-base {
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 7.2 Frosted Glass Card */
+.glass-card {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 20, 30, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+}
+
+.glass-card-strong {
+  background: rgba(10, 14, 22, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow);
+}
+
+/* 7.3 Stripe-Inspired Hover Card */
+.stripe-card {
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.stripe-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-hover);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+}
+
+/* 7.4 Interactive Glowing Grid Card */
+.glow-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glow-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--x, 50%) var(--y, 50%),
+    rgba(242, 178, 62, 0.18),
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.glow-card:hover {
+  border-color: rgba(242, 178, 62, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.glow-card:hover::before {
+  opacity: 1;
+}
+
+/* 7.5 Interactive 3D Floating Product Card */
+.card-3d {
+  perspective: 1000px;
+}
+
+.card-3d-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.card-3d:hover .card-3d-inner {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+}
+
+.card-3d-image {
+  animation: floatDish 5s ease-in-out infinite;
+}
+
+@keyframes floatDish {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* 7.6 Expandable Wallet Payment Card */
+.wallet-card {
+  border-radius: 1.25rem;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.wallet-card:hover {
+  border-color: rgba(242, 178, 62, 0.35);
+}
+
+.wallet-header {
+  padding: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.wallet-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wallet-card.open .wallet-content {
+  grid-template-rows: 1fr;
+}
+
+.wallet-content-inner {
+  overflow: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background-image: 
+    radial-gradient(circle at 15% 10%, rgba(245, 158, 11, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(59, 130, 246, 0.04) 0%, transparent 40%),
+    linear-gradient(180deg, #0a0e17 0%, #070a10 100%);
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+  outline: none;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 10px 0;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.glass-nav {
+  background: rgba(10, 14, 23, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-gold {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-rose {
+  background: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.badge-blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Glow and Gradient Text */
+.gradient-text-gold {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Button Variants */
+.btn-primary {
+  background: var(--gold-gradient);
+  color: #000;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.pulse-live {
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+/* Custom Scrollbar que respeta las esquinas redondeadas y no se sale */
+.custom-scroll {
+  scrollbar-gutter: stable;
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 12px 0; /* Margen superior e inferior para evitar salirse de las esquinas redondeadas */
+  border-radius: 9999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.28);
+  border-radius: 9999px;
+  border: none;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+
+/* Reglas Responsivas Globales para cualquier dispositivo */
+html, body, #root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Soporte de safe-area para dispositivos móviles (iPhone notch, barras de navegación) */
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
+/* Cuadrículas y Tarjetas Fluidas Responsivas */
+.dishes-responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.popular-responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+.dish-card-img-container {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.dish-card-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dish-card-title {
+  font-weight: 800;
+  font-size: clamp(0.78rem, 2.5vw, 0.95rem);
+  line-height: 1.25;
+  color: #f8fafc;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.dish-card-desc {
+  font-size: clamp(0.66rem, 2vw, 0.78rem);
+  line-height: 1.25;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.admin-dashboard-container {
+  width: 95vw;
+  max-width: 1440px;
+  height: 90vh;
+  max-height: 90vh;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.admin-overview-hero {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.25fr) minmax(300px, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.admin-detailed-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+}
+
+.admin-modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  column-gap: 14px;
+  row-gap: 20px;
+  width: 100%;
+}
+
+.admin-kpis-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+}
+
+/* Responsividad para móviles pequeños */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+  .admin-dashboard-container {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    padding: 12px;
+    border-radius: 0;
+  }
+  .admin-overview-hero {
+    grid-template-columns: 1fr;
+  }
+  .admin-kpis-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .admin-detailed-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .popular-responsive-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  .dishes-responsive-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  .dish-card-img-container {
+    height: 190px !important;
+    aspect-ratio: 16 / 9 !important;
+  }
+  .dish-card-title {
+    font-size: 1.05rem !important;
+    -webkit-line-clamp: 2 !important;
+  }
+  .dish-card-desc {
+    font-size: 0.85rem !important;
+    -webkit-line-clamp: 3 !important;
+    line-height: 1.35 !important;
+  }
+  .admin-modules-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Responsividad para pantallas medianas / tablets */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .admin-dashboard-container {
+    width: 96vw;
+    max-width: 96vw;
+    height: 94vh;
+    max-height: 94vh;
+    margin: 2vh auto;
+  }
+  .admin-overview-hero {
+    grid-template-columns: 1fr;
+  }
+  .admin-detailed-layout {
+    grid-template-columns: 220px 1fr;
+    gap: 16px;
+  }
+  .responsive-container {
+    max-width: 100% !important;
+  }
+  .popular-responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dishes-responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admin-modules-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Pantallas grandes y desktops */
+@media (min-width: 1025px) {
+  .popular-responsive-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+  .admin-modules-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
